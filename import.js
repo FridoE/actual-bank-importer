@@ -199,10 +199,7 @@ function serverURL(config) {
 
 async function connectActual(config) {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  const auth = config.ACTUAL_TOKEN
-    ? { sessionToken: config.ACTUAL_TOKEN }
-    : { password: config.ACTUAL_PASSWORD };
-  await api.init({ dataDir: DATA_DIR, serverURL: serverURL(config), ...auth });
+  await api.init({ dataDir: DATA_DIR, serverURL: serverURL(config), password: config.ACTUAL_PASSWORD });
 }
 
 async function cmdListAccounts(bankName, config) {
@@ -212,8 +209,8 @@ async function cmdListAccounts(bankName, config) {
     process.exit(1);
   }
   if (!serverURL(config)) { console.error('Configuration error — set ACTUAL_SERVER_URL in .importer-config'); process.exit(1); }
-  if (!config.ACTUAL_TOKEN && !config.ACTUAL_PASSWORD) {
-    console.error('Configuration error — set either ACTUAL_TOKEN or ACTUAL_PASSWORD in .importer-config');
+  if (!config.ACTUAL_PASSWORD) {
+    console.error('Configuration error — set ACTUAL_PASSWORD in .importer-config');
     process.exit(1);
   }
 
@@ -259,8 +256,8 @@ async function cmdImport(csvFile, dryRun, config) {
 
   requireConfig(config, [`${bankKey}_SYNC_ID`, `${bankKey}_ACCOUNT_ID`]);
   if (!serverURL(config)) { console.error('Configuration error — set ACTUAL_SERVER_URL in .importer-config'); process.exit(1); }
-  if (!config.ACTUAL_TOKEN && !config.ACTUAL_PASSWORD) {
-    console.error('Configuration error — set either ACTUAL_TOKEN or ACTUAL_PASSWORD in .importer-config');
+  if (!config.ACTUAL_PASSWORD) {
+    console.error('Configuration error — set ACTUAL_PASSWORD in .importer-config');
     process.exit(1);
   }
 

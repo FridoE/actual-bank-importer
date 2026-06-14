@@ -1,49 +1,47 @@
 # actual-bank-importer
 
-Importiert Kontoauszüge (CSV) von deutschen Banken in [Actual Budget](https://actualbudget.org).
+Imports bank statement CSV exports into [Actual Budget](https://actualbudget.org).
 
-Die Bank wird automatisch anhand des CSV-Headers erkannt. Neue Banken können durch Hinzufügen eines Adapter-Objekts in `import.js` ergänzt werden.
+The bank is detected automatically from the CSV header. Adding support for a new bank requires only a single adapter object in `import.js`.
 
-**Unterstützte Banken:** DKB, comdirect
+**Supported banks:** DKB, comdirect
 
-## Voraussetzungen
+## Requirements
 
 - Node.js 18+
-- Laufende Actual Budget Instanz
+- A running Actual Budget instance
 
-## Installation
+## Setup
 
 ```bash
 npm install
 cp .importer-config.example .importer-config
 ```
 
-`.importer-config` ausfüllen (siehe [Konfiguration](#konfiguration)).
+Fill in `.importer-config` (see [Configuration](#configuration)).
 
-## Verwendung
+## Usage
 
 ```bash
-# Import (Bank wird automatisch erkannt)
+# Import transactions (bank is auto-detected)
 node import.js Umsatzliste.csv
 
-# Vorschau ohne Import
+# Preview without importing
 node import.js Umsatzliste.csv --dry-run
 
-# Account-IDs nachschlagen
+# Look up account IDs
 node import.js --list-accounts --bank dkb
 node import.js --list-accounts --bank comdirect
 ```
 
-## Konfiguration
+## Configuration
 
-`.importer-config` ist eine einfache Key=Value-Datei (kein JSON, kein YAML) und wird nie committed.
+`.importer-config` is a simple key=value file (no JSON, no YAML) and is never committed.
 
 ```ini
 ACTUAL_SERVER_URL=https://your-actual-server.example.com
 
-# Authentifizierung — genau eine Option setzen:
-ACTUAL_TOKEN=...          # API-Token (für OIDC-Setups erforderlich)
-# ACTUAL_PASSWORD=...     # Server-Passwort (nur ohne OIDC)
+ACTUAL_PASSWORD=your-password-here
 
 # DKB
 DKB_SYNC_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -54,31 +52,29 @@ COMDIRECT_SYNC_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 COMDIRECT_ACCOUNT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
-**API-Token** (für OIDC-Setups): Actual Budget → Settings → Show advanced settings → API Token
+**Sync ID**: Actual Budget → Settings → Show advanced settings → Sync ID
 
-**Sync-ID**: Actual Budget → Settings → Show advanced settings → Sync ID
+**Account IDs**: Use `--list-accounts` to look them up (see above).
 
-**Account-IDs**: Mit `--list-accounts` nachschlagen (siehe oben).
+Each bank can import into a different budget (different `SYNC_ID`) and a different account (`ACCOUNT_ID`).
 
-Jede Bank kann in ein anderes Budget (unterschiedliche `SYNC_ID`) und ein anderes Konto (`ACCOUNT_ID`) importieren.
+## Adding a new bank
 
-## Neue Bank hinzufügen
-
-Ein Adapter-Objekt ans `BANKS`-Array in `import.js` anhängen:
+Append one adapter object to the `BANKS` array in `import.js`:
 
 ```js
 {
-  name: 'sparkasse',     // Prefix für Config-Keys: SPARKASSE_SYNC_ID, SPARKASSE_ACCOUNT_ID
-  encoding: 'utf-8',     // oder 'win1252'
+  name: 'sparkasse',     // config key prefix: SPARKASSE_SYNC_ID, SPARKASSE_ACCOUNT_ID
+  encoding: 'utf-8',     // or 'win1252'
   detect(lines) {
     return lines[4]?.includes('Auftragskonto');
   },
   parse(content) {
-    // CSV parsen, Array von Transaktionen zurückgeben:
+    // Parse CSV and return an array of transactions:
     // [{ date, amount, payee_name, notes, imported_id }, ...]
-    // date: 'YYYY-MM-DD', amount: Cent als Integer (1 EUR = 100)
+    // date: 'YYYY-MM-DD', amount: integer cents (1 EUR = 100)
   },
 }
 ```
 
-Kein weiterer Code muss geändert werden.
+No other code changes required.
