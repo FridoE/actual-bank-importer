@@ -1,0 +1,6 @@
+node_modules/
+.actual-data/
+.importer-config
+__pycache__/
+.venv/
+*.pyc

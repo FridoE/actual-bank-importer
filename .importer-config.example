@@ -1,0 +1,27 @@
+# Actual Budget CSV Importer — configuration template
+# Copy this file to .importer-config and fill in your values.
+# .importer-config is gitignored and never committed.
+
+# ── Server ────────────────────────────────────────────────────────────────────
+
+ACTUAL_SERVER_URL=https://your-actual-server.example.com
+
+# Authentication — set exactly one of these:
+# Option 1: API token (required for OIDC setups, recommended otherwise)
+#   Generate in Actual Budget: Settings → Advanced settings → API Token
+ACTUAL_TOKEN=your-api-token-here
+
+# Option 2: Server password (only for non-OIDC setups)
+# ACTUAL_PASSWORD=your-password-here
+
+# ── DKB ───────────────────────────────────────────────────────────────────────
+# Run: node import.js --list-accounts --bank dkb   to find ACCOUNT_ID
+
+DKB_SYNC_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+DKB_ACCOUNT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+# ── comdirect ─────────────────────────────────────────────────────────────────
+# Run: node import.js --list-accounts --bank comdirect   to find ACCOUNT_ID
+
+COMDIRECT_SYNC_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+COMDIRECT_ACCOUNT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
