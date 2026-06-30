@@ -2,9 +2,9 @@
 
 Imports bank statement CSV exports into [Actual Budget](https://actualbudget.org).
 
-The bank is detected automatically from the CSV header. Adding support for a new bank requires only a single adapter object in `import.js`.
+The bank is detected automatically from the CSV header.
 
-**Supported banks:** DKB, comdirect
+**Currently supported banks:** DKB, comdirect
 
 ## Requirements
 
@@ -36,7 +36,7 @@ node import.js --list-accounts --bank comdirect
 
 ## Configuration
 
-`.importer-config` is a simple key=value file (no JSON, no YAML) and is never committed.
+Configuration is done within `.importer-config`:
 
 ```ini
 ACTUAL_SERVER_URL=https://your-actual-server.example.com
